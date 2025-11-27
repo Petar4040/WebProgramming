@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Models\Job;
 
@@ -19,17 +20,24 @@ class JobController extends Controller
         return view('jobs.create');
     }
 
-    public function store(Request $request): string
+    public function store(Request $request): RedirectResponse
     {
-        $title = $request->input('title');
-        $description = $request->input('description');
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
 
-        return "Title: $title, Description: $description";
+        Job::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+        ]);
+
+        return redirect()->route('jobs.index');
     }
 
-    public function show(string $id): string
+    public function show(Job $job): View
     {
-        return "Showing job $id";
+        return view('jobs.show', compact('job'));
     }
 
     public function edit(string $id): string
