@@ -7,14 +7,30 @@
       <x-nav-link url="/" :active="request()->is('/')">Home</x-nav-link>
       <x-nav-link url="/jobs" :active="request()->is('jobs')">All Jobs</x-nav-link>
       @auth
-      <x-nav-link url="/dashboard" :active="request()->is('dashboard')" icon="gauge">Dashboard</x-nav-link>
-      @if(auth()->user()->isAdmin())
       <x-button-link url="/jobs/create" icon="edit">Create Job</x-button-link>
-      @endif
-      <form method="POST" action="{{ route('logout') }}" class="inline">
+
+      <!-- User Avatar -->
+      <div class="flex items-center space-x-3">
+        <a href="{{ route('dashboard') }}">
+          @if(Auth::user()->avatar)
+          <img
+            src="{{ asset('storage/' . Auth::user()->avatar) }}"
+            alt="{{ Auth::user()->name }}"
+            class="w-10 h-10 rounded-full"
+          />
+          @else
+          <img
+            src="{{ asset('storage/avatars/default-avatar.png') }}"
+            alt="{{ Auth::user()->name }}"
+            class="w-10 h-10 rounded-full"
+          />
+          @endif
+        </a>
+      </div>
+      <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button type="submit" class="text-white hover:underline py-2">
-          <i class="fa fa-sign-out-alt mr-1"></i> Logout
+        <button type="submit" class="text-white">
+          <i class="fa fa-sign-out"></i> Logout
         </button>
       </form>
       @else
@@ -34,14 +50,24 @@
     <x-nav-link url="/jobs" :active="request()->is('jobs')" :mobile="true">All Jobs</x-nav-link>
     @auth
     <x-nav-link url="/dashboard" :active="request()->is('dashboard')" :mobile="true">Dashboard</x-nav-link>
-    @if(auth()->user()->isAdmin())
     <a
-      href="{{ url('/jobs/create') }}"
-      class="block px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black"
+      href="{{ route('dashboard') }}"
+      class="block px-4 py-2"
     >
-      <i class="fa fa-edit"></i> Create Job
+      @if(Auth::user()->avatar)
+      <img
+        src="{{ asset('storage/' . Auth::user()->avatar) }}"
+        alt="{{ Auth::user()->name }}"
+        class="w-10 h-10 rounded-full"
+      />
+      @else
+      <img
+        src="{{ asset('storage/avatars/default-avatar.png') }}"
+        alt="{{ Auth::user()->name }}"
+        class="w-10 h-10 rounded-full"
+      />
+      @endif
     </a>
-    @endif
     <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2">
       @csrf
       <button type="submit" class="hover:bg-blue-700 w-full text-left">
